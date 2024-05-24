@@ -16,8 +16,8 @@ void AdaSPI_ADS1118::begin() {
     _config_register[0] = _BV(2); // 010 = FSR is ±2.048 V (default)
 
     _config_register[1] = 
-    _BV (1) ||    //update the Config register
-    _BV (3) ||    //enable pullup
+    _BV (1) |    //update the Config register
+    _BV (3) |    //enable pullup
     _BV (7);    //100 = 128 SPS (default )
 
     Serial.println("Config register:");
@@ -26,10 +26,10 @@ void AdaSPI_ADS1118::begin() {
 }
 
 word AdaSPI_ADS1118::adsRead(uint8_t port) {
-    uint8_t data[2];
-    data[0] |= port;
+    uint8_t data[2] = {0, 0};
     memcpy(&data, &_config_register, 2);
-    spi->write_and_read(data, 16);
+    data[0] |= port;    
+    spi->write_and_read(data, 2);
     return word(data[0], data[1]);
 }
 
